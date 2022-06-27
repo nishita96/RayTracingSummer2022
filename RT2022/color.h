@@ -2,7 +2,7 @@
 //  color.h
 //  RayTracingCourse
 //
-//  Created by Nishita Kharche on 6/12/22.
+//  Created by Nishita Kharche.
 //
 
 #ifndef color_h

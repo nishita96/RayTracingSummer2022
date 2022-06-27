@@ -2,7 +2,7 @@
 //  vec3.h
 //  RayTracingCourse
 //
-//  Created by Nishita Kharche on 6/12/22.
+//  Created by Nishita Kharche.
 //
 
 #ifndef vec3_h
@@ -13,8 +13,7 @@
 using namespace std;
 
 class vec3 {
-    public:
-        vec3() : e{0,0,0} {}
+    public: vec3() : e{0,0,0} {}
         vec3(double xx, double yy, double zz) : e{xx,yy,zz} {}
         
         double x() const {return e[0];}
@@ -44,11 +43,7 @@ class vec3 {
         }
 
         double length() const {
-            return sqrt(length_squared());
-        }
-
-        double length_squared() const {
-            return e[0]*e[0] + e[1]*e[1] + e[2]*e[2];
+            return sqrt(e[0]*e[0] + e[1]*e[1] + e[2]*e[2]);
         }
         
     public:
