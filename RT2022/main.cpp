@@ -20,7 +20,20 @@
 #include <iostream>
 using namespace std;
 
+bool hit_sphere_check(const point3& center, double radius, const ray& r) {
+    //calculating values of (t) at intersection from ray
+    vec3 oc = r.origin() - center;
+    auto a = dot(r.direction(), r.direction());
+    auto b = 2.0 * dot(oc, r.direction());
+    auto c = dot(oc, oc) - radius*radius;
+    auto discriminant = b*b - 4*a*c;
+    return (discriminant > 0);
+}
+
 color rayColor(const ray& r) {
+    if (hit_sphere_check(point3(0,-1,-2), 0.2, r)) {
+        return color(1,0,0);//red sphere
+    }
     //horizon background - blue to yellow
     //circular
     auto cosThetaT = (abs( (r.direction().z() + 2.829)/2.0)) / (sqrt( (r.direction().x()* r.direction().x()) + (r.direction().y()*r.direction().y()) + (r.direction().z()*r.direction().z())));
