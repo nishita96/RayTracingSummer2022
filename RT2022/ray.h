@@ -11,7 +11,6 @@
 #include "vec3.h"
 
 //ray as a function P(t) = A + tB
-
 class ray {
     public:ray() {}
         ray(const point3& origin, const vec3& direction):orig(origin), direc(direction) {}
@@ -19,7 +18,9 @@ class ray {
         point3 origin() const {return orig; }
         vec3 direction() const {return direc; }
     
-        point3 at(double t) const { return orig + direc*t;}
+        point3 at(double t) const {
+            return orig + direc*t;
+        }
     
     public:
         point3 orig;

@@ -1,6 +1,6 @@
 //
 //  main.cpp
-//  RayTracingCourse
+//  RT2022
 //
 //  Created by Nishita Kharche.
 //
@@ -16,26 +16,28 @@
 #include "vec3.h"
 #include "ray.h"
 
+#include <cstdlib>
 #include <iostream>
 using namespace std;
 
 color rayColor(const ray& r) {
     //horizon background - blue to yellow
-    auto top = (r.direction().y() + 1.0)/2.0;
-    return top*color(0.5, 0.7, 1.0) + (1.0-top)*color(0.9, 0.9, 0.7);
+    //circular
+    auto cosThetaT = (abs( (r.direction().z() + 2.829)/2.0)) / (sqrt( (r.direction().x()* r.direction().x()) + (r.direction().y()*r.direction().y()) + (r.direction().z()*r.direction().z())));
+    return (1-cosThetaT)*color(0.3, 0.5, 1.0) + (cosThetaT)*color(0.9, 0.9, 0.7);
 }
 
 int main() {
 
     // about image
     const auto aspectRatio = 297.0/210.0;
-    const int width = 400;
-    const int height = 400 / aspectRatio;
+    const int width = 600;
+    const int height = width / aspectRatio;
     
     //camera viewport
     
     auto viewportHeight = 2.0;
-    auto viewportWidth = aspectRatio * height;
+    auto viewportWidth = aspectRatio * viewportHeight;
     
     auto focal_length = 1.0;
     auto origin = point3(0, 0, 0); //viewing origin

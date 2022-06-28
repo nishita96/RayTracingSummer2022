@@ -1,6 +1,6 @@
 //
 //  color.h
-//  RayTracingCourse
+//  RT2022
 //
 //  Created by Nishita Kharche.
 //
