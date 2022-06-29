@@ -20,19 +20,26 @@
 #include <iostream>
 using namespace std;
 
-bool hit_sphere_check(const point3& center, double radius, const ray& r) {
+double hit_sphere_check(const point3& center, double radius, const ray& r) {
     //calculating values of (t) at intersection from ray
     vec3 oc = r.origin() - center;
     auto a = dot(r.direction(), r.direction());
-    auto b = 2.0 * dot(oc, r.direction());
+    //removing factor of 2
+    auto half_b = dot(oc, r.direction());
     auto c = dot(oc, oc) - radius*radius;
-    auto discriminant = b*b - 4*a*c;
-    return (discriminant > 0);
+    auto discriminant = half_b*half_b - a*c;
+    if (discriminant < 0) {//no solution
+        return -1.0;
+    } else {
+        return (-half_b - sqrt(discriminant) ) / a;//taking the closest hit hence -b
+    }
 }
 
 color rayColor(const ray& r) {
-    if (hit_sphere_check(point3(0,-1,-2), 0.2, r)) {
-        return color(1,0,0);//red sphere
+    auto t = hit_sphere_check(point3(0,0,-1), 0.3, r);
+    if(t>0.0){
+        vec3 normal = unit_vector(r.at(t) - point3(0,0,-1));
+        return 0.5*color(normal.x()+1, normal.y()+1, normal.z()+1);;
     }
     //horizon background - blue to yellow
     //circular
@@ -48,7 +55,6 @@ int main() {
     const int height = width / aspectRatio;
     
     //camera viewport
-    
     auto viewportHeight = 2.0;
     auto viewportWidth = aspectRatio * viewportHeight;
     
