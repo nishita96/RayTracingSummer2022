@@ -16,30 +16,19 @@
 #include "vec3.h"
 #include "ray.h"
 
+#include "rtweekend.h"
+#include "color.h"
+#include "hittable_list.h"
+#include "sphere.h"
+
 #include <cstdlib>
 #include <iostream>
 using namespace std;
 
-double hit_sphere_check(const point3& center, double radius, const ray& r) {
-    //calculating values of (t) at intersection from ray
-    vec3 oc = r.origin() - center;
-    auto a = dot(r.direction(), r.direction());
-    //removing factor of 2
-    auto half_b = dot(oc, r.direction());
-    auto c = dot(oc, oc) - radius*radius;
-    auto discriminant = half_b*half_b - a*c;
-    if (discriminant < 0) {//no solution
-        return -1.0;
-    } else {
-        return (-half_b - sqrt(discriminant) ) / a;//taking the closest hit hence -b
-    }
-}
-
-color rayColor(const ray& r) {
-    auto t = hit_sphere_check(point3(0,0,-1), 0.3, r);
-    if(t>0.0){
-        vec3 normal = unit_vector(r.at(t) - point3(0,0,-1));
-        return 0.5*color(normal.x()+1, normal.y()+1, normal.z()+1);;
+color rayColor(const ray& r, const hittable& world) {
+    hit_record rec;
+    if (world.hit(r, 0, infinity, rec)) {
+        return 0.5 * (rec.normal + color(1,1,1));
     }
     //horizon background - blue to yellow
     //circular
@@ -50,9 +39,14 @@ color rayColor(const ray& r) {
 int main() {
 
     // about image
-    const auto aspectRatio = 297.0/210.0;
+    const auto aspectRatio = 16.0/9.0;
     const int width = 600;
     const int height = width / aspectRatio;
+    
+    //objects in world 
+    hittable_list world;
+    world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
+    world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
     
     //camera viewport
     auto viewportHeight = 2.0;
@@ -75,10 +69,10 @@ int main() {
             //II
             auto rdirection = lower_left_corner
             + (double(i) / (width-1))*horizontal
-            + (double(j) / (height-1))*vertical - origin;
+            + (double(j) / (height-1))*vertical;// - origin;
             ray r(origin, rdirection);
 
-            color pixelColor = rayColor(r);
+            color pixelColor = rayColor(r,world);
             writeColor(cout, pixelColor); //writes code for the PPM image
 
         }
