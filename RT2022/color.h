@@ -12,9 +12,21 @@
 #include <iostream>
 using namespace std;
 
-void writeColor(ostream &out, color pixelColor){
-    // all colour componenets[0,255] for each pixel
-    out << static_cast<int>(255.999 * pixelColor.x() ) << ' ' << static_cast<int>(255.999 * pixelColor.y() ) << ' ' << static_cast<int>(255.999 * pixelColor.z() ) << '\n';
+void writeColor(ostream &out, color pixelColor, int samples_per_pixel){
+    auto r = pixelColor.x();
+    auto g = pixelColor.y();
+    auto b = pixelColor.z();
+    
+    // Divide the color by the number of samples.
+    auto scale = 1.0 / samples_per_pixel;
+    r *= scale;
+    g *= scale;
+    b *= scale;
+    
+    // Write the translated [0,255] value of each color component.
+    out << static_cast<int>(256 * clamp(r, 0.0, 0.999)) << ' '
+        << static_cast<int>(256 * clamp(g, 0.0, 0.999)) << ' '
+        << static_cast<int>(256 * clamp(b, 0.0, 0.999)) << '\n';
 }
 
 #endif /* color_h */

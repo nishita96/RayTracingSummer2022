@@ -16,6 +16,8 @@
 #include "vec3.h"
 #include "ray.h"
 
+#include "camera.h"
+
 #include "rtweekend.h"
 #include "color.h"
 #include "hittable_list.h"
@@ -32,6 +34,7 @@ color rayColor(const ray& r, const hittable& world) {
     }
     //horizon background - blue to yellow
     //circular
+    //check value 2.829
     auto cosThetaT = (abs( (r.direction().z() + 2.829)/2.0)) / (sqrt( (r.direction().x()* r.direction().x()) + (r.direction().y()*r.direction().y()) + (r.direction().z()*r.direction().z())));
     return (1-cosThetaT)*color(0.3, 0.5, 1.0) + (cosThetaT)*color(0.9, 0.9, 0.7);
 }
@@ -42,22 +45,15 @@ int main() {
     const auto aspectRatio = 16.0/9.0;
     const int width = 600;
     const int height = width / aspectRatio;
+    const int samples_per_pixel = 100;
     
     //objects in world 
     hittable_list world;
     world.add(make_shared<sphere>(point3(0,0,-1), 0.5));
     world.add(make_shared<sphere>(point3(0,-100.5,-1), 100));
     
-    //camera viewport
-    auto viewportHeight = 2.0;
-    auto viewportWidth = aspectRatio * viewportHeight;
-    
-    auto focal_length = 1.0;
-    auto origin = point3(0, 0, 0); //viewing origin
-    auto horizontal = vec3(viewportWidth, 0, 0);
-    auto vertical = vec3(0, viewportHeight, 0);
-    
-    auto lower_left_corner = origin - horizontal/2 - vertical/2 - vec3(0, 0, focal_length);
+    //camera things
+    camera cam;
     
     //rendering
     
@@ -66,14 +62,13 @@ int main() {
     for (int j = height-1; j >= 0; --j) {
 //        cerr << "Lines Remaining Are: " << j << flush ; //error output stream
         for (int i = 0; i < width; ++i) {
+            color pixelColor(0,0,0);
             //II
-            auto rdirection = lower_left_corner
-            + (double(i) / (width-1))*horizontal
-            + (double(j) / (height-1))*vertical;// - origin;
-            ray r(origin, rdirection);
-
-            color pixelColor = rayColor(r,world);
-            writeColor(cout, pixelColor); //writes code for the PPM image
+            for(int s = 0; s<samples_per_pixel ; s++){
+                ray r = cam.get_ray((double(i) / (width-1)),(double(j) / (height-1)));
+                pixelColor += rayColor(r, world);
+            }
+            writeColor(cout, pixelColor, samples_per_pixel); //writes code for the PPM image
 
         }
     }
