@@ -58,6 +58,12 @@ class vec3 {
 //            min + (max-min)*(rand() / (RAND_MAX + 1.0))
             return vec3(min + (max-min)*(rand() / (RAND_MAX + 1.0)),min + (max-min)*(rand() / (RAND_MAX + 1.0)),min + (max-min)*(rand() / (RAND_MAX + 1.0)));
         }
+    
+        bool near_zero() const {
+            // Return true if the vector is close to zero in all dimensions.
+            const auto s = 1e-8;
+            return (fabs(e[0]) < s) && (fabs(e[1]) < s) && (fabs(e[2]) < s);
+        }
         
     public:
         double e[3];
@@ -113,13 +119,20 @@ inline vec3 unit_vector(vec3 v) {
 }
 
 
-
 vec3 random_in_unit_sphere() {
     while (true) {
     auto p = vec3::random(-1,1);
     if (dot(p,p) >= 1) continue;///////
         return p;
     }
+}
+
+vec3 random_unit_vector() {
+    return unit_vector(random_in_unit_sphere());
+}
+
+vec3 reflect(const vec3& v, const vec3& n) {
+    return v - 2*dot(v,n)*n;
 }
 
 #endif /* vec3_h */
