@@ -45,6 +45,19 @@ class vec3 {
         double length() const {
             return sqrt(e[0]*e[0] + e[1]*e[1] + e[2]*e[2]);
         }
+    
+        //check place
+        inline static vec3 random() {
+            double randomDouble = rand() / (RAND_MAX + 1.0);
+            return vec3(randomDouble, randomDouble, randomDouble);
+        }
+
+        inline static vec3 random(double min, double max) {
+//            double randomDouble = rand() / (RAND_MAX + 1.0);
+//            double randomDoubleRange = min + (max-min)*randomDouble;
+//            min + (max-min)*(rand() / (RAND_MAX + 1.0))
+            return vec3(min + (max-min)*(rand() / (RAND_MAX + 1.0)),min + (max-min)*(rand() / (RAND_MAX + 1.0)),min + (max-min)*(rand() / (RAND_MAX + 1.0)));
+        }
         
     public:
         double e[3];
@@ -97,6 +110,16 @@ inline vec3 cross(const vec3 &u, const vec3 &v) {
 
 inline vec3 unit_vector(vec3 v) {
     return v / v.length();
+}
+
+
+
+vec3 random_in_unit_sphere() {
+    while (true) {
+    auto p = vec3::random(-1,1);
+    if (dot(p,p) >= 1) continue;///////
+        return p;
+    }
 }
 
 #endif /* vec3_h */

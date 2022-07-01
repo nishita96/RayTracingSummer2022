@@ -27,10 +27,14 @@
 #include <iostream>
 using namespace std;
 
-color rayColor(const ray& r, const hittable& world) {
+color rayColor(const ray& r, const hittable& world, int depth) {
     hit_record rec;
+    
+    if (depth<=0)
+        return color(0,0,0);
     if (world.hit(r, 0, infinity, rec)) {
-        return 0.5 * (rec.normal + color(1,1,1));
+        point3 target = rec.p + rec.normal + random_in_unit_sphere();
+        return 0.5 * rayColor(ray(rec.p, target - rec.p), world, depth-1);
     }
     //horizon background - blue to yellow
     //circular
@@ -43,9 +47,10 @@ int main() {
 
     // about image
     const auto aspectRatio = 16.0/9.0;
-    const int width = 600;
+    const int width = 300;
     const int height = width / aspectRatio;
     const int samples_per_pixel = 100;
+    const int max_depth = 50;
     
     //objects in world 
     hittable_list world;
@@ -66,7 +71,7 @@ int main() {
             //II
             for(int s = 0; s<samples_per_pixel ; s++){
                 ray r = cam.get_ray((double(i) / (width-1)),(double(j) / (height-1)));
-                pixelColor += rayColor(r, world);
+                pixelColor += rayColor(r, world, max_depth);
             }
             writeColor(cout, pixelColor, samples_per_pixel); //writes code for the PPM image
 
