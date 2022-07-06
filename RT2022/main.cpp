@@ -54,7 +54,7 @@ int main() {
 
     // about image
     const auto aspectRatio = 16.0/9.0;
-    const int width = 600;
+    const int width = 300;
     const int height = width / aspectRatio;
     const int samples_per_pixel = 100;
     const int max_depth = 50;
@@ -73,7 +73,12 @@ int main() {
     world.add(make_shared<sphere>(point3( 1.0, 0.0, -1.0), 0.5, material_right));
     
     //camera things
-    camera cam(point3(-1.5,-0.1,1.5), point3(0,0.1,-1), vec3(0,1,0), 25, aspectRatio);
+//    camera cam(point3(-1.5,-0.1,1.5), point3(0,0.1,-1), vec3(0,1,0), 25, aspectRatio);
+    point3 lookfrom(3,3,2);
+    point3 lookat(0,0,-1);
+    vec3 vup(0,1,0);
+    auto dist_to_focus = (lookfrom-lookat).length(); auto aperture = 2.0;
+    camera cam(lookfrom, lookat, vup, 20, aspectRatio, aperture, dist_to_focus);
     
     //rendering
     

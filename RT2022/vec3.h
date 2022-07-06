@@ -8,6 +8,8 @@
 #ifndef vec3_h
 #define vec3_h
 
+//#include "rtweekend.h"
+
 #include <cmath>
 #include <iostream>
 using namespace std;
@@ -141,5 +143,17 @@ vec3 refract(const vec3& uv, const vec3& n, double etai_over_etat) {
     vec3 r_out_parallel = -sqrt(fabs(1.0 - dot(r_out_perp, r_out_perp))) * n;
     return r_out_perp + r_out_parallel;
 }
+
+inline double random_double(double min, double max) { // Returns a random real in [min,max).
+    return min + (max-min)*(rand() / (RAND_MAX + 1.0));
+}
+vec3 random_in_unit_disk() {
+    while (true) {
+        auto p = vec3(random_double(-1,1), random_double(-1,1), 0);
+        if (dot(p, p) >= 1) continue;
+        return p;
+    }
+}
+
 
 #endif /* vec3_h */
